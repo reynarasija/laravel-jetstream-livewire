@@ -24,7 +24,9 @@
                 @include('livewire.create')
             @endif
 
-            <div class="flex justify-end">
+            <div class="flex justify-between">
+            <input type="text" wire:model.live="search" placeholder="Search posts..."
+            class="border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm py-2 px-4 rounded my-3">
             <button wire:click="create()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-3">Create New Post</button>
             </div>
 
@@ -37,22 +39,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($posts as $post)
-                        <tr>
-                            <td class="border px-4 py-2">{{ $post->title }}</td>
-                            <td class="border px-4 py-2">{{ $post->content }}</td>
-                            <td class="border px-4 py-2 ">
-                                <div class="flex justify-center space-x-8">
-                                    <button wire:click="edit({{ $post->id }})"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
-                                    <button wire:click="delete({{ $post->id }})"
-                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
+                @if($posts->count() > 0)
+                @foreach($posts as $post)
+                <tr>
+                    <td class="border px-4 py-2">{{ $post->title }}</td>
+                    <td class="border px-4 py-2">{{ $post->content }}</td>
+                    <td class="border px-4 py-2">
+                        <div class="flex justify-center space-x-8">
+                            <button wire:click="edit({{ $post->id }})"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
+                            <button wire:click="delete({{ $post->id }})"
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+                @else
+                <tr class="h-32">
+                    <td colspan="3" class="text-center py-4 align-bottom">No posts found.</td>
+                </tr>
+                @endif
                 </tbody>
-            </table>
+
+            </table><br>
+            {{ $posts->links() }}
         </div>
     </div>
 </div>

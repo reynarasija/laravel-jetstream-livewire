@@ -3,25 +3,28 @@
 namespace App\Livewire\Post;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\Post;
 
 class Index extends Component
 {
-    public $posts, $title, $content, $post_id;
+    use WithPagination;
+
+    public $title, $content, $post_id;
     public $isOpen = 0;
-    public $search = '';
+    public $search;
+    protected $updatesQueryString = ['search'];
     public function render()
     {
-        $this->posts = Post::all();
-        return view('livewire.posts');
 
         
-    }
-    public function search()
-    {
-        $this->posts = Post::where('title', 'like', '%'.$this->search.'%')
-                            ->orWhere('content', 'like', '%'.$this->search.'%')
-                            ->get();
+        return view('livewire.posts',[
+            'posts'=>$this->search === null ?
+               Post::orderBy('created_at', 'asc')->paginate(5) :
+               Post::orderBy('created_at', 'asc')->where('title','like','%'.$this->search.'%')
+                    ->orWhere('content', 'like', '%'.$this->search.'%')->paginate(5) 
+        ]);
+        
     }
 
     public function create()
@@ -96,6 +99,7 @@ class Index extends Component
         $this->post_id = $id;
         $this->title = $post->title;
         $this->content = $post->content;
+
     
         $this->openModal();
     }
